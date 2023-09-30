@@ -12,7 +12,7 @@ import com.Leonardo168.api.models.ParkingSpotModel;
 public class SegundaApiApplication {
 
 	public static void main(String[] args) {
-		//SpringApplication.run(SegundaApiApplication.class, args);
+		SpringApplication.run(SegundaApiApplication.class, args);
 	}
 	
 	@GetMapping("/")

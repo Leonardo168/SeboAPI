@@ -12,10 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "TB_PARKING_SPOT")
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class ParkingSpotModel implements Serializable{
 	
