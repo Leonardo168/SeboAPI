@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,11 +34,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/parking-spot")
 public class ParkingSpotController {
 	
-	final ParkingSpotService parkingSpotService;
-
-	public ParkingSpotController(ParkingSpotService parkingSpotService) {
-		this.parkingSpotService = parkingSpotService;
-	}
+	@Autowired
+	ParkingSpotService parkingSpotService;
 	
 	@PostMapping
 	public ResponseEntity <Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDto parkingSpotDto){

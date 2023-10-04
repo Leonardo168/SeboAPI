@@ -1,19 +1,21 @@
 package com.Leonardo168.api.configs.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class WebSecurityConfig{
+	
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
 	
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -28,15 +30,15 @@ public class WebSecurityConfig{
 	}
 	
 	@Bean
-	UserDetailsService users() {
-		UserDetails admin = User.builder()
-				.username("leonardo")
-				.password(passwordEncoder().encode("607080"))
-				.roles("ADMIN")
-				.build();
-		return new InMemoryUserDetailsManager(admin);
+	SecurityConfigurerAdapter<AuthenticationManager, AuthenticationManagerBuilder> authenticationConfigurer(){
+		return new SecurityConfigurerAdapter<AuthenticationManager, AuthenticationManagerBuilder>() {
+			@Override
+			public void configure(AuthenticationManagerBuilder auth) throws Exception {
+				auth.userDetailsService(userDetailsService)
+					.passwordEncoder(passwordEncoder());
+			}
+		};
 	}
-	
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {

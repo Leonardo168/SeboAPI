@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "TB_PARKING_SPOT")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ParkingSpotModel implements Serializable{
+@NoArgsConstructor
+public class ParkingSpotModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
