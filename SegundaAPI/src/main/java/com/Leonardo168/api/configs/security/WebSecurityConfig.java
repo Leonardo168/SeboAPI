@@ -3,6 +3,7 @@ package com.Leonardo168.api.configs.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,6 +24,10 @@ public class WebSecurityConfig{
 			.httpBasic()
 			.and()
 			.authorizeHttpRequests()
+			.requestMatchers(HttpMethod.GET, "/parking-spot/**").permitAll()
+			.requestMatchers(HttpMethod.POST, "/parking-spot").hasAnyRole("ADMIN", "USER")
+			.requestMatchers(HttpMethod.PUT, "/parking-spot/**").hasRole("ADMIN")
+			.requestMatchers(HttpMethod.DELETE, "/parking-spot/**").hasRole("ADMIN")
 			.anyRequest().authenticated()
 			.and()
 			.csrf().disable();
