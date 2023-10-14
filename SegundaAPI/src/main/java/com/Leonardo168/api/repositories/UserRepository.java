@@ -12,4 +12,6 @@ import com.Leonardo168.api.models.UserModel;
 public interface UserRepository extends JpaRepository<UserModel, UUID>{
 	
 	Optional<UserModel> findByUsername(String username);
+
+	boolean existsByUsername(String username);
 }

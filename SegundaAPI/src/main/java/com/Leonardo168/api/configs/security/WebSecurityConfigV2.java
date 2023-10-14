@@ -17,6 +17,7 @@ public class WebSecurityConfigV2 {
 				.httpBasic()
 				.and()
 				.authorizeHttpRequests()
+				.requestMatchers(HttpMethod.GET, "/user").permitAll()
 				.requestMatchers(HttpMethod.POST, "/user").permitAll()
 				.requestMatchers(HttpMethod.GET, "/parking-spot/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/parking-spot").hasAnyRole("ADMIN", "USER")
