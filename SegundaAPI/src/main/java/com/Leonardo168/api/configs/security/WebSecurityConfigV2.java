@@ -17,10 +17,12 @@ public class WebSecurityConfigV2 {
 				.httpBasic()
 				.and()
 				.authorizeHttpRequests()
+				.requestMatchers(HttpMethod.POST, "/user").permitAll()
 				.requestMatchers(HttpMethod.GET, "/parking-spot/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/parking-spot").hasAnyRole("ADMIN", "USER")
 				.requestMatchers(HttpMethod.PUT, "/parking-spot/**").hasRole("ADMIN")
-				.requestMatchers(HttpMethod.DELETE, "/parking-spot/**").hasRole("ADMIN").anyRequest().authenticated()
+				.requestMatchers(HttpMethod.DELETE, "/parking-spot/**").hasRole("ADMIN")
+				.anyRequest().authenticated()
 				.and().csrf().disable();
 		return http.build();
 	}
