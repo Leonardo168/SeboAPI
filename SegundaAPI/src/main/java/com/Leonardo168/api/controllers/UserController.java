@@ -9,7 +9,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +64,19 @@ public class UserController {
 		userModel.setRoles(userModelOptional.get().getRoles());
 		userModel.setEnable(true);
 		return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id){
+		Optional<UserModel> userModelOptional = userService.findByID(id);
+		if(!userModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		UserModel userModel = new UserModel();
+		BeanUtils.copyProperties(userModelOptional.get(), userModel);
+		userModel.setEnable(false);
+		userService.save(userModel);
+		return ResponseEntity.status(HttpStatus.OK).body("User deleted");
 	}
 
 }
