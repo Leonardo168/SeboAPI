@@ -62,6 +62,14 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
 	}
 	
+	@DeleteMapping("/self")
+	public ResponseEntity<Object> disableCurrentUser(){
+		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
+		userModel.setEnable(false);
+		userService.save(userModel);
+		return ResponseEntity.status(HttpStatus.OK).body("User disabled");
+	}
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> disableUserById(@PathVariable(value = "id") UUID id){
 		Optional<UserModel> userModelOptional = userService.findByID(id);
