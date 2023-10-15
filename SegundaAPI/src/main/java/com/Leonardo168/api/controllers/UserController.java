@@ -54,6 +54,9 @@ public class UserController {
 	
 	@PutMapping
 	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserDto userDto){
+		if(userService.existsByUsername(userDto.getUsername())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
+		}
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
 		BeanUtils.copyProperties(userDto, userModel);
 		return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
