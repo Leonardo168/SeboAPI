@@ -54,4 +54,8 @@ public class UserService {
 		}
 	}
 
+	public void delete(UserModel userModel) {
+		userRepository.delete(userModel);
+	}
+
 }

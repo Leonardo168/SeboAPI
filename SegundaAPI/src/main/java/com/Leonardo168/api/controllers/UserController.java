@@ -41,7 +41,7 @@ public class UserController {
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userDto, userModel);
 		List<RoleModel> roles = new ArrayList<>();
-		roles.add(new RoleModel(UUID.fromString("650afd21-bf0c-4435-b32f-3df6e65bf95c"),RoleName.ROLE_USER));
+		roles.add(new RoleModel(UUID.fromString("f36630dd-d521-4c74-ab3a-f2443bde992f"),RoleName.ROLE_USER));
 		userModel.setRoles(roles);
 		userModel.setEnable(true);
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userModel));
@@ -67,7 +67,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id){
+	public ResponseEntity<Object> disableUser(@PathVariable(value = "id") UUID id){
 		Optional<UserModel> userModelOptional = userService.findByID(id);
 		if(!userModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
@@ -76,7 +76,20 @@ public class UserController {
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
 		userModel.setEnable(false);
 		userService.save(userModel);
-		return ResponseEntity.status(HttpStatus.OK).body("User deleted");
+		return ResponseEntity.status(HttpStatus.OK).body("User disabled");
 	}
+	
+	/*PARA REMOVER USUÁRIOS DO BANCO DE DADOS*/
+//	@DeleteMapping("admin/{id}")
+//	public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id){
+//		Optional<UserModel> userModelOptional = userService.findByID(id);
+//		if(!userModelOptional.isPresent()) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+//		}
+//		UserModel userModel = new UserModel();
+//		BeanUtils.copyProperties(userModelOptional.get(), userModel);
+//		userService.delete(userModelOptional.get());
+//		return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
+//	}
 
 }
