@@ -76,6 +76,7 @@ public class UserController {
 		userService.save(userModel);
 		return ResponseEntity.status(HttpStatus.OK).body("The user has been given an admin role.");
 	}
+	
 	@DeleteMapping("/self")
 	public ResponseEntity<Object> disableCurrentUser(){
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
@@ -100,6 +101,9 @@ public class UserController {
 	/*PARA REMOVER USUÁRIOS DO BANCO DE DADOS*/
 //	@DeleteMapping("definitivo/{id}")
 //	public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") UUID id){
+//		if (id == UUID.fromString("eae7e721-05ee-4c59-95a5-e4a845c2ad8e")) {
+//			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("cannot delete original admin");
+//		}
 //		Optional<UserModel> userModelOptional = userService.findByID(id);
 //		if(!userModelOptional.isPresent()) {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
