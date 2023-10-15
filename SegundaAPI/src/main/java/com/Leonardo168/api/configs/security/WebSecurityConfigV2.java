@@ -22,9 +22,10 @@ public class WebSecurityConfigV2 {
 	                .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
 	                .requestMatchers(HttpMethod.POST, "/user").permitAll()
 	                .requestMatchers(HttpMethod.PUT, "/user").hasAnyRole("ADMIN", "USER")
+	                .requestMatchers(HttpMethod.PUT, "/user/admin/{id}").hasRole("ADMIN")
 	                .requestMatchers(HttpMethod.DELETE, "/user/self").hasRole("USER")
 	                .requestMatchers(HttpMethod.DELETE, "/user/{id}").hasRole("ADMIN")
-	                .requestMatchers(HttpMethod.DELETE, "/user/admin/{id}").hasRole("ADMIN")
+	                .requestMatchers(HttpMethod.DELETE, "/user/definitivo/{id}").hasRole("ADMIN")
 	                
 	                .requestMatchers(HttpMethod.GET, "/parking-spot/{id}").hasAnyRole("ADMIN", "USER")
 	                .requestMatchers(HttpMethod.POST, "/parking-spot").hasAnyRole("ADMIN", "USER")

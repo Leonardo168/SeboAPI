@@ -62,6 +62,20 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
 	}
 	
+	@PutMapping("/admin/{id}")
+	public ResponseEntity <Object> setAdminRole(@PathVariable(value = "id") UUID id){
+		Optional<UserModel> userModelOptional = userService.findByID(id);
+		if(!userModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		UserModel userModel = new UserModel();
+		BeanUtils.copyProperties(userModelOptional.get(), userModel);
+		List<RoleModel> roles = userModel.getRoles();
+		roles.add(new RoleModel(UUID.fromString("9f8f7064-92ac-4078-acff-f160b662b3e1"),RoleName.ROLE_ADMIN));
+		userModel.setRoles(roles);
+		userService.save(userModel);
+		return ResponseEntity.status(HttpStatus.OK).body("The user has been given an admin role.");
+	}
 	@DeleteMapping("/self")
 	public ResponseEntity<Object> disableCurrentUser(){
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
@@ -84,7 +98,7 @@ public class UserController {
 	}
 	
 	/*PARA REMOVER USUÁRIOS DO BANCO DE DADOS*/
-//	@DeleteMapping("admin/{id}")
+//	@DeleteMapping("definitivo/{id}")
 //	public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") UUID id){
 //		Optional<UserModel> userModelOptional = userService.findByID(id);
 //		if(!userModelOptional.isPresent()) {
