@@ -1,6 +1,8 @@
 package com.Leonardo168.api.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Leonardo168.api.dtos.UserDto;
+import com.Leonardo168.api.enums.RoleName;
+import com.Leonardo168.api.models.RoleModel;
 import com.Leonardo168.api.models.UserModel;
 import com.Leonardo168.api.services.UserService;
 
@@ -32,6 +36,9 @@ public class UserController {
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userDto, userModel);
+		List<RoleModel> roles = new ArrayList<>();
+		roles.add(new RoleModel(UUID.fromString("a4f83c84-5688-4fa6-b0f6-44b9b33a11cb"),RoleName.ROLE_USER));
+		userModel.setRoles(roles);
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userModel));
 	}
 	
