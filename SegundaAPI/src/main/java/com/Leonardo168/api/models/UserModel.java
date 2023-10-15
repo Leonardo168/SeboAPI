@@ -38,6 +38,8 @@ public class UserModel implements UserDetails, Serializable {
 	private String username;
 	@Column(nullable = false)
 	private String password;
+	@Column(nullable = false)
+	private boolean enable;
 	@ManyToMany
 	@JoinTable(name = "TB_USERS_ROLES",
 			joinColumns = @JoinColumn(name = "user_id"),
@@ -80,7 +82,7 @@ public class UserModel implements UserDetails, Serializable {
 	
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return this.enable;
 	}
 
 }

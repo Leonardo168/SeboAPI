@@ -1,9 +1,15 @@
 package com.Leonardo168.api.services;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.Leonardo168.api.models.ParkingSpotModel;
 import com.Leonardo168.api.models.UserModel;
 import com.Leonardo168.api.repositories.UserRepository;
 
@@ -26,9 +32,23 @@ public class UserService {
 	public List<UserModel> findAll() {
 		return userRepository.findAll();
 	}
+	
+	public Optional<UserModel> findByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
 
 	public boolean existsByUsername(String username) {
 		return userRepository.existsByUsername(username);
+	}
+	
+	public String getCurrentUsername() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+		    String currentUserName = authentication.getName();
+		    return currentUserName;
+		}else{
+		    return "No User";
+		}
 	}
 
 }
