@@ -80,16 +80,16 @@ public class UserController {
 	}
 	
 	/*PARA REMOVER USUÁRIOS DO BANCO DE DADOS*/
-//	@DeleteMapping("admin/{id}")
-//	public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id){
-//		Optional<UserModel> userModelOptional = userService.findByID(id);
-//		if(!userModelOptional.isPresent()) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-//		}
-//		UserModel userModel = new UserModel();
-//		BeanUtils.copyProperties(userModelOptional.get(), userModel);
-//		userService.delete(userModelOptional.get());
-//		return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
-//	}
+	@DeleteMapping("admin/{id}")
+	public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id){
+		Optional<UserModel> userModelOptional = userService.findByID(id);
+		if(!userModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		UserModel userModel = new UserModel();
+		BeanUtils.copyProperties(userModelOptional.get(), userModel);
+		userService.delete(userModelOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
+	}
 
 }
