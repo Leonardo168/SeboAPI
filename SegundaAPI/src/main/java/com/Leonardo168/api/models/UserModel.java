@@ -57,7 +57,7 @@ public class UserModel implements UserDetails, Serializable {
 	}
 	
 	public void setPassword(String password) {
-		this.password = new BCryptPasswordEncoder().encode(password);
+		this.password = password;
 	}
 	
 	@Override

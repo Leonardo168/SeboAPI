@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,9 +42,10 @@ public class UserController {
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userDto, userModel);
 		List<RoleModel> roles = new ArrayList<>();
-		roles.add(new RoleModel(UUID.fromString("f36630dd-d521-4c74-ab3a-f2443bde992f"),RoleName.ROLE_USER));
+		roles.add(new RoleModel(UUID.fromString("f3bd1ddd-2b45-4dfd-be30-95fc4d21f97e"),RoleName.ROLE_USER));
 		userModel.setRoles(roles);
 		userModel.setEnable(true);
+		userModel.setPassword(new BCryptPasswordEncoder().encode(userModel.getPassword()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userModel));
 	}
 	
@@ -59,6 +61,7 @@ public class UserController {
 		}
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
 		BeanUtils.copyProperties(userDto, userModel);
+		userModel.setPassword(new BCryptPasswordEncoder().encode(userModel.getPassword()));
 		return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
 	}
 	
@@ -71,7 +74,7 @@ public class UserController {
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
 		List<RoleModel> roles = userModel.getRoles();
-		roles.add(new RoleModel(UUID.fromString("9f8f7064-92ac-4078-acff-f160b662b3e1"),RoleName.ROLE_ADMIN));
+		roles.add(new RoleModel(UUID.fromString("0c5d4f9a-51cb-48ba-ac18-745b87b5cb10"),RoleName.ROLE_ADMIN));
 		userModel.setRoles(roles);
 		userService.save(userModel);
 		return ResponseEntity.status(HttpStatus.OK).body("The user has been given an admin role.");
@@ -80,6 +83,9 @@ public class UserController {
 	@DeleteMapping("/self")
 	public ResponseEntity<Object> disableCurrentUser(){
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
+		List<RoleModel> roles = new ArrayList<>();
+		roles.add(new RoleModel(UUID.fromString("356ec2b4-f9f2-4700-a4eb-43cc3229e873"),RoleName.ROLE_DISABLED));
+		userModel.setRoles(roles);
 		userModel.setEnable(false);
 		userService.save(userModel);
 		return ResponseEntity.status(HttpStatus.OK).body("User disabled");
@@ -87,31 +93,37 @@ public class UserController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> disableUserById(@PathVariable(value = "id") UUID id){
+		if (id.equals(UUID.fromString("eae7e721-05ee-4c59-95a5-e4a845c2ad8e"))) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("cannot disable default admin");
+		}
 		Optional<UserModel> userModelOptional = userService.findByID(id);
 		if(!userModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
+		List<RoleModel> roles = new ArrayList<>();
+		roles.add(new RoleModel(UUID.fromString("356ec2b4-f9f2-4700-a4eb-43cc3229e873"),RoleName.ROLE_DISABLED));
+		userModel.setRoles(roles);
 		userModel.setEnable(false);
 		userService.save(userModel);
 		return ResponseEntity.status(HttpStatus.OK).body("User disabled");
 	}
 	
 	/*PARA REMOVER USUÁRIOS DO BANCO DE DADOS*/
-//	@DeleteMapping("definitivo/{id}")
-//	public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") UUID id){
-//		if (id == UUID.fromString("eae7e721-05ee-4c59-95a5-e4a845c2ad8e")) {
-//			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("cannot delete original admin");
-//		}
-//		Optional<UserModel> userModelOptional = userService.findByID(id);
-//		if(!userModelOptional.isPresent()) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-//		}
-//		UserModel userModel = new UserModel();
-//		BeanUtils.copyProperties(userModelOptional.get(), userModel);
-//		userService.delete(userModelOptional.get());
-//		return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
-//	}
+	@DeleteMapping("definitivo/{id}")
+	public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") UUID id){
+		if (id.equals(UUID.fromString("eae7e721-05ee-4c59-95a5-e4a845c2ad8e"))) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("cannot delete default admin");
+		}
+		Optional<UserModel> userModelOptional = userService.findByID(id);
+		if(!userModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		UserModel userModel = new UserModel();
+		BeanUtils.copyProperties(userModelOptional.get(), userModel);
+		userService.delete(userModelOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
+	}
 
 }
