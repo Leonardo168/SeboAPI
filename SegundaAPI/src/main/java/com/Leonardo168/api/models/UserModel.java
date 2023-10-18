@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,6 +33,8 @@ public class UserModel implements UserDetails, Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID userId;
+	@Column(nullable = false)
+	private String name;
 	@Column(nullable = false, unique = true)
 	private String username;
 	@Column(nullable = false)
