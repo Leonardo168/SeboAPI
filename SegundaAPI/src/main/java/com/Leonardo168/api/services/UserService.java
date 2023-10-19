@@ -1,9 +1,10 @@
 package com.Leonardo168.api.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,13 +29,13 @@ public class UserService {
 		return userRepository.save(userModel);
 	}
 	
-	public List<UserModel> findAll() {
-		return userRepository.findAll();
+	public Page<UserModel> findAll(Pageable pageable) {
+		return userRepository.findAll(pageable);
 	}
 	
-	public String countUsers() {
-		return ("Users registered: " + findAll().size());
-	}
+//	public String countUsers() {
+//		return ("Users registered: " + findAll().size());
+//	}
 	
 	public Optional<UserModel> findByID(UUID id) {
 		return userRepository.findById(id);

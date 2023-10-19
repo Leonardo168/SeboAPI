@@ -20,7 +20,7 @@ public class WebSecurityConfigV2 {
 	        .authorizeHttpRequests(authorizeRequests ->
 	            authorizeRequests
 	                .requestMatchers(HttpMethod.GET, "/user").hasAuthority("ROLE_ADMIN")
-	                .requestMatchers(HttpMethod.GET, "/user/count").hasAuthority("ROLE_ADMIN")
+//	                .requestMatchers(HttpMethod.GET, "/user/count").hasAuthority("ROLE_ADMIN")
 	                .requestMatchers(HttpMethod.POST, "/user").permitAll()
 	                .requestMatchers(HttpMethod.PUT, "/user").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
 	                .requestMatchers(HttpMethod.PUT, "/user/admin/{id}").hasAuthority("ROLE_ADMIN")
