@@ -54,6 +54,11 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
 	}
 	
+	@GetMapping("/count")
+	public ResponseEntity<Object> countUsers(){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.countUsers());
+	}
+	
 	@PutMapping
 	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserDto userDto){
 		if(userService.existsByUsername(userDto.getUsername())) {
@@ -83,9 +88,6 @@ public class UserController {
 	@DeleteMapping("/self")
 	public ResponseEntity<Object> disableCurrentUser(){
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
-		List<RoleModel> roles = new ArrayList<>();
-		roles.add(new RoleModel(UUID.fromString("356ec2b4-f9f2-4700-a4eb-43cc3229e873"),RoleName.ROLE_DISABLED));
-		userModel.setRoles(roles);
 		userModel.setEnable(false);
 		userService.save(userModel);
 		return ResponseEntity.status(HttpStatus.OK).body("User disabled");
@@ -102,9 +104,6 @@ public class UserController {
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
-		List<RoleModel> roles = new ArrayList<>();
-		roles.add(new RoleModel(UUID.fromString("356ec2b4-f9f2-4700-a4eb-43cc3229e873"),RoleName.ROLE_DISABLED));
-		userModel.setRoles(roles);
 		userModel.setEnable(false);
 		userService.save(userModel);
 		return ResponseEntity.status(HttpStatus.OK).body("User disabled");

@@ -1,6 +1,7 @@
 package com.Leonardo168.api.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +50,11 @@ public class UserModel implements UserDetails, Serializable {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.roles;
+		if(this.enable == true) {
+			return this.roles;
+		}
+		List<RoleModel> roles = new ArrayList<>();
+		return roles;
 	}
 	
 	@Override

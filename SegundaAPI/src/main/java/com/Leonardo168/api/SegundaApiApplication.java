@@ -8,6 +8,7 @@ public class SegundaApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SegundaApiApplication.class, args);
+		System.out.println("\n\nReady!\n\n");
 	}
 
 }
