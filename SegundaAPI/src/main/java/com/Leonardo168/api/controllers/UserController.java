@@ -65,7 +65,7 @@ public class UserController {
 	
 	@PutMapping
 	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserDto userDto){
-		if(userService.existsByUsername(userDto.getUsername())) {
+		if((userService.existsByUsername(userDto.getUsername())) && (!userService.getCurrentUsername().equals(userDto.getUsername()))) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
 		}
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
@@ -79,6 +79,9 @@ public class UserController {
 		Optional<UserModel> userModelOptional = userService.findByID(id);
 		if(!userModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		if(userModelOptional.get().getRoles().contains(new RoleModel(UUID.fromString("0c5d4f9a-51cb-48ba-ac18-745b87b5cb10"),RoleName.ROLE_ADMIN))) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: User already has admin role");
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
@@ -105,6 +108,9 @@ public class UserController {
 		Optional<UserModel> userModelOptional = userService.findByID(id);
 		if(!userModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		if(!userModelOptional.get().isEnabled()) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: User is already disabled");
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
