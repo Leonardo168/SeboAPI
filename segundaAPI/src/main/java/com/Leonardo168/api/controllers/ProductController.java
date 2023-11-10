@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Leonardo168.api.dtos.ProductRecordDto;
+import com.Leonardo168.api.enums.RoleName;
 import com.Leonardo168.api.models.ProductModel;
+import com.Leonardo168.api.models.RoleModel;
 import com.Leonardo168.api.repositories.ProductRepository;
 import com.Leonardo168.api.services.UserService;
 
@@ -66,6 +68,10 @@ public class ProductController {
 		Optional<ProductModel> productModelOptional = productRepository.findById(id);
 		if(!productModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+		}
+		if(!userService.findByID(userService.getCurrentUserId()).get().getRoles().contains(new RoleModel(UUID.fromString("0c5d4f9a-51cb-48ba-ac18-745b87b5cb10"),RoleName.ROLE_ADMIN))
+				&& (!userService.getCurrentUserId().equals(productModelOptional.get().getVendorId()))) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot edit other users products");
 		}
 		ProductModel productModel = new ProductModel();
 		BeanUtils.copyProperties(productModelOptional.get(), productModel);

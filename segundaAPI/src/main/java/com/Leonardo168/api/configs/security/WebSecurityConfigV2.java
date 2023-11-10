@@ -29,9 +29,10 @@ public class WebSecurityConfigV2 {
 	                .requestMatchers(HttpMethod.DELETE, "/user/definitivo/{id}").hasAuthority("ROLE_ADMIN")
 	                
 	                .requestMatchers(HttpMethod.GET, "/product").permitAll()
+	                .requestMatchers(HttpMethod.GET, "/product/{isbn}").permitAll()
 	                .requestMatchers(HttpMethod.POST, "/product").hasAnyRole("ADMIN", "USER")
 	                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasAnyRole("ADMIN", "USER")
-	                .requestMatchers(HttpMethod.DELETE, "/parking-spot/{id}").hasRole("ADMIN")
+	                .requestMatchers(HttpMethod.DELETE, "/product/{id}").hasRole("ADMIN")
 	                
 	                .anyRequest().authenticated()
 	        )
