@@ -39,7 +39,7 @@ public class UserController {
 	UserService userService;
 	
 	@PostMapping
-	public ResponseEntity <Object> saveParkingSpot(@RequestBody @Valid UserDto userDto){
+	public ResponseEntity <Object> saveUser(@RequestBody @Valid UserDto userDto){
 		if(userService.existsByUsername(userDto.getUsername())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
 		}

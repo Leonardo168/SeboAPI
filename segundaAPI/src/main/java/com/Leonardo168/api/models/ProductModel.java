@@ -27,6 +27,8 @@ public class ProductModel implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID itemId;
+	@Column(nullable = false, length = 17)
+	private String isbn;
 	@Column(nullable = false, length = 70)
 	private String title;
 	@Column(nullable = false, length = 70)
