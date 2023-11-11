@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class CategoryController {
 	@PostMapping
 	public ResponseEntity<Object> saveCategory(@RequestBody @Valid CategoryRecordDto categoryRecordDto){
 		if(categoryService.existsByname(categoryRecordDto.categoryName())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category name is already in use!");
 		}
 		CategoryModel categoryModel = new CategoryModel();
 		BeanUtils.copyProperties(categoryRecordDto, categoryModel);
@@ -47,6 +48,20 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll(pageable));
 	}
 	
+	@PutMapping("/{categoryName}")
+	public ResponseEntity<Object> updateCategoryByName(@PathVariable(value = "categoryName") String categoryName, @RequestBody @Valid CategoryRecordDto categoryRecordDto){
+		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(categoryName);
+		if(!categoryModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+		}
+		if(categoryService.existsByname(categoryRecordDto.categoryName()) && !categoryRecordDto.categoryName().equals(categoryModelOptional.get().getCategoryName())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category name is already in use!");
+		}
+		CategoryModel categoryModel = categoryModelOptional.get();
+		BeanUtils.copyProperties(categoryRecordDto, categoryModel);
+		return ResponseEntity.status(HttpStatus.OK).body(categoryService.save(categoryModel));
+	}
+	
 	@DeleteMapping("/{categoryName}")
 	public ResponseEntity<Object> disableCategoryByName(@PathVariable(value = "categoryName") String categoryName){
 		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(categoryName);
@@ -56,8 +71,7 @@ public class CategoryController {
 		if(!categoryModelOptional.get().isEnable()) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category is already disabled");
 		}
-		CategoryModel categoryModel = new CategoryModel();
-		BeanUtils.copyProperties(categoryModelOptional.get(), categoryModel);
+		CategoryModel categoryModel = categoryModelOptional.get();
 		categoryModel.setEnable(false);
 		categoryService.save(categoryModel);
 		return ResponseEntity.status(HttpStatus.OK).body("Category disabled");
