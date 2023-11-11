@@ -29,5 +29,7 @@ public class CategoryModel implements Serializable{
 	private String categoryName;
 	@Column(nullable = false)
 	private String categoryDescription;
+	@Column(nullable = false)
+	private boolean enable;
 
 }

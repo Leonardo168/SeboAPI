@@ -36,4 +36,7 @@ public class CategoryService {
 		return categoryRepository.existsByCategoryName(categoryName);
 	}
 
+	public Optional<CategoryModel> findByCategoryName(String categoryName) {
+		return categoryRepository.findByCategoryName(categoryName.toUpperCase());
+	}
 }

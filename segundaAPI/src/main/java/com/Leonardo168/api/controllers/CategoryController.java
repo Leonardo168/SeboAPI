@@ -1,5 +1,7 @@
 package com.Leonardo168.api.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,7 +10,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,12 +38,29 @@ public class CategoryController {
 		}
 		CategoryModel categoryModel = new CategoryModel();
 		BeanUtils.copyProperties(categoryRecordDto, categoryModel);
+		categoryModel.setEnable(true);
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(categoryModel));
 	}
 	
 	@GetMapping
 	public ResponseEntity<Page<CategoryModel>> getAllCategories(@PageableDefault(page = 0, size = 10, sort = "categoryName", direction = Sort.Direction.ASC)Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll(pageable));
+	}
+	
+	@DeleteMapping("/{categoryName}")
+	public ResponseEntity<Object> disableCategoryByName(@PathVariable(value = "categoryName") String categoryName){
+		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(categoryName);
+		if(!categoryModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+		}
+		if(!categoryModelOptional.get().isEnable()) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category is already disabled");
+		}
+		CategoryModel categoryModel = new CategoryModel();
+		BeanUtils.copyProperties(categoryModelOptional.get(), categoryModel);
+		categoryModel.setEnable(false);
+		categoryService.save(categoryModel);
+		return ResponseEntity.status(HttpStatus.OK).body("Category disabled");
 	}
 
 }

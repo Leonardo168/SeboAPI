@@ -35,6 +35,7 @@ public class WebSecurityConfigV2 {
 	                
 	                .requestMatchers(HttpMethod.GET, "/category").permitAll()
 	                .requestMatchers(HttpMethod.POST, "/category").hasAuthority("ROLE_ADMIN")
+	                .requestMatchers(HttpMethod.DELETE, "/category/{categoryName}").hasAuthority("ROLE_ADMIN")
 	                
 	                .anyRequest().authenticated()
 	        )
