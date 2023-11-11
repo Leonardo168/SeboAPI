@@ -33,9 +33,9 @@ public class UserModel implements UserDetails, Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID userId;
-	@Column(nullable = false)
+	@Column(nullable = false, length = 70)
 	private String name;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, length = 20)
 	private String username;
 	@Column(nullable = false)
 	private String password;

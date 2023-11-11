@@ -25,7 +25,7 @@ public class CategoryModel implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID categoryId;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, length = 20, unique = true)
 	private String categoryName;
 	@Column(nullable = false)
 	private String categoryDescription;

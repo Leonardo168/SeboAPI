@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Leonardo168.api.dtos.UserDto;
+import com.Leonardo168.api.dtos.UserRecordDto;
 import com.Leonardo168.api.enums.RoleName;
 import com.Leonardo168.api.models.RoleModel;
 import com.Leonardo168.api.models.UserModel;
@@ -39,12 +39,12 @@ public class UserController {
 	UserService userService;
 	
 	@PostMapping
-	public ResponseEntity <Object> saveUser(@RequestBody @Valid UserDto userDto){
-		if(userService.existsByUsername(userDto.getUsername())) {
+	public ResponseEntity <Object> saveUser(@RequestBody @Valid UserRecordDto userRecordDto){
+		if(userService.existsByUsername(userRecordDto.username())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
 		}
 		UserModel userModel = new UserModel();
-		BeanUtils.copyProperties(userDto, userModel);
+		BeanUtils.copyProperties(userRecordDto, userModel);
 		List<RoleModel> roles = new ArrayList<>();
 		roles.add(new RoleModel(UUID.fromString("f3bd1ddd-2b45-4dfd-be30-95fc4d21f97e"),RoleName.ROLE_USER));
 		userModel.setRoles(roles);
@@ -64,12 +64,12 @@ public class UserController {
 //	}
 	
 	@PutMapping
-	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserDto userDto){
-		if((userService.existsByUsername(userDto.getUsername())) && (!userService.getCurrentUsername().equals(userDto.getUsername()))) {
+	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserRecordDto userRecordDto){
+		if((userService.existsByUsername(userRecordDto.username())) && (!userService.getCurrentUsername().equals(userRecordDto.username()))) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
 		}
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
-		BeanUtils.copyProperties(userDto, userModel);
+		BeanUtils.copyProperties(userRecordDto, userModel);
 		userModel.setPassword(new BCryptPasswordEncoder().encode(userModel.getPassword()));
 		return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
 	}

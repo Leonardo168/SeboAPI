@@ -33,7 +33,7 @@ public class ProductModel implements Serializable {
 	private String title;
 	@Column(nullable = false, length = 70)
 	private String author;
-	@Column(nullable = false, length = 10)
+	@Column(nullable = false, length = 20)
 	private String categorie;
 	@Column(nullable = false)
 	private BigDecimal value;
