@@ -3,6 +3,7 @@ package com.Leonardo168.api.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -18,11 +19,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
 	
-	final UserRepository userRepository;
-	
-	public UserService(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+	@Autowired
+	UserRepository userRepository;
 	
 	@Transactional
 	public UserModel save(UserModel userModel) {

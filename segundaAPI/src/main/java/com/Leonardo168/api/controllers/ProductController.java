@@ -25,7 +25,7 @@ import com.Leonardo168.api.dtos.ProductRecordDto;
 import com.Leonardo168.api.enums.RoleName;
 import com.Leonardo168.api.models.ProductModel;
 import com.Leonardo168.api.models.RoleModel;
-import com.Leonardo168.api.repositories.ProductRepository;
+import com.Leonardo168.api.services.ProductService;
 import com.Leonardo168.api.services.UserService;
 
 import jakarta.validation.Valid;
@@ -35,18 +35,18 @@ import jakarta.validation.Valid;
 public class ProductController {
 	
 	@Autowired
-	ProductRepository productRepository;
+	ProductService productService;
 	@Autowired
 	UserService userService;
 	
 	@GetMapping
 	public ResponseEntity<Page<ProductModel>> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
-		return ResponseEntity.status(HttpStatus.OK).body(productRepository.findAll(pageable));
+		return ResponseEntity.status(HttpStatus.OK).body(productService.findAll(pageable));
 	}
 	
 	@GetMapping("/{isbn}")
 	public ResponseEntity <Object> getProduct(@PathVariable(value = "isbn") String isbn){
-		Optional<ProductModel> productModelOptional = productRepository.findByIsbn(isbn);
+		Optional<ProductModel> productModelOptional = productService.findByIsbn(isbn);
 		if(!productModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 		}
@@ -60,12 +60,12 @@ public class ProductController {
 		productModel.setAvailable(true);
 		productModel.setEditDate(LocalDateTime.now(ZoneId.of("UTC")));
 		productModel.setVendorId(userService.getCurrentUserId());
-		return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(productModel));
+		return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productModel));
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity <Object> updadateProduct(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProductRecordDto productRecordDto){
-		Optional<ProductModel> productModelOptional = productRepository.findById(id);
+		Optional<ProductModel> productModelOptional = productService.findById(id);
 		if(!productModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 		}
@@ -77,7 +77,7 @@ public class ProductController {
 		BeanUtils.copyProperties(productModelOptional.get(), productModel);
 		BeanUtils.copyProperties(productRecordDto, productModel);
 		productModel.setEditDate(LocalDateTime.now(ZoneId.of("UTC")));
-		return ResponseEntity.status(HttpStatus.OK).body(productRepository.save(productModel));
+		return ResponseEntity.status(HttpStatus.OK).body(productService.save(productModel));
 	}
 
 }
