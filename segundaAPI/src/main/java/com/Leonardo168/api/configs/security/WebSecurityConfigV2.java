@@ -30,9 +30,10 @@ public class WebSecurityConfigV2 {
 	                
 	                .requestMatchers(HttpMethod.GET, "/product").permitAll()
 	                .requestMatchers(HttpMethod.GET, "/product/{isbn}").permitAll()
-	                .requestMatchers(HttpMethod.POST, "/product").hasAnyRole("ADMIN", "USER")
-	                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasAnyRole("ADMIN", "USER")
-	                .requestMatchers(HttpMethod.DELETE, "/product/{id}").hasRole("ADMIN")
+	                .requestMatchers(HttpMethod.POST, "/product").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+	                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+	                
+	                .requestMatchers(HttpMethod.POST, "/category").hasAuthority("ROLE_ADMIN")
 	                
 	                .anyRequest().authenticated()
 	        )
