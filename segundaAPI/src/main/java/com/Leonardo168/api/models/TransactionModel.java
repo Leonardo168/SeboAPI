@@ -25,6 +25,8 @@ public class TransactionModel {
 	@Column(nullable = false)
 	private UUID productId;
 	@Column(nullable = false)
+	private UUID vendorId;
+	@Column(nullable = false)
 	private UUID buyerId;
 	@Column(nullable = false)
 	private LocalDateTime transactionDate;

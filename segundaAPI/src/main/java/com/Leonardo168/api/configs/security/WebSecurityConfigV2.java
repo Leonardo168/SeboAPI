@@ -42,7 +42,7 @@ public class WebSecurityConfigV2 {
 	                .requestMatchers(HttpMethod.DELETE, "/category/definitivo/{categoryName}").hasAuthority("ROLE_ADMIN")
 	                
 	                .requestMatchers(HttpMethod.POST, "/transaction/{productId}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-	                .requestMatchers(HttpMethod.GET, "/transaction/{buyerId}").permitAll()
+	                .requestMatchers(HttpMethod.GET, "/transaction/{buyerId}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
 	                
 	                .anyRequest().authenticated()
 	        )
