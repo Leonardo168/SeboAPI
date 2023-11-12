@@ -39,7 +39,7 @@ public class CategoryController {
 	@PostMapping
 	public ResponseEntity<Object> saveCategory(@RequestBody @Valid CategoryRecordDto categoryRecordDto){
 		if(categoryService.existsByname(categoryRecordDto.categoryName())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category name is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Category name is already in use!");
 		}
 		CategoryModel categoryModel = new CategoryModel();
 		BeanUtils.copyProperties(categoryRecordDto, categoryModel);
@@ -59,7 +59,7 @@ public class CategoryController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
 		}
 		if(categoryService.existsByname(categoryRecordDto.categoryName()) && !categoryRecordDto.categoryName().equals(categoryModelOptional.get().getCategoryName())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category name is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Category name is already in use!");
 		}
 		CategoryModel categoryModel = categoryModelOptional.get();
 		BeanUtils.copyProperties(categoryRecordDto, categoryModel);
@@ -73,7 +73,7 @@ public class CategoryController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
 		}
 		if(!categoryModelOptional.get().isEnable()) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Category is already disabled");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Category is already disabled");
 		}
 		CategoryModel categoryModel = categoryModelOptional.get();
 		categoryModel.setEnable(false);
@@ -89,7 +89,7 @@ public class CategoryController {
 		}
 		Optional<Page<ProductModel>> productModelOptional = productService.findByCategory(categoryModelOptional.get(), null);
 		if(!productModelOptional.get().isEmpty()){
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete categories with registered products.");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot delete categories with registered products.");
 		}
 		categoryService.delete(categoryModelOptional.get());
 		return ResponseEntity.status(HttpStatus.OK).body("Category deleted.");

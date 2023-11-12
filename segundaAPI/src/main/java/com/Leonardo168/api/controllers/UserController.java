@@ -41,7 +41,7 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity <Object> saveUser(@RequestBody @Valid UserRecordDto userRecordDto){
 		if(userService.existsByUsername(userRecordDto.username())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already in use!");
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userRecordDto, userModel);
@@ -66,7 +66,7 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserRecordDto userRecordDto){
 		if((userService.existsByUsername(userRecordDto.username())) && (!userService.getCurrentUsername().equals(userRecordDto.username()))) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Username is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already in use!");
 		}
 		UserModel userModel = userService.findByUsername(userService.getCurrentUsername()).get();
 		BeanUtils.copyProperties(userRecordDto, userModel);
@@ -81,7 +81,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
 		}
 		if(userModelOptional.get().getRoles().contains(new RoleModel(UUID.fromString("0c5d4f9a-51cb-48ba-ac18-745b87b5cb10"),RoleName.ROLE_ADMIN))) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: User already has admin role");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("User already has admin role");
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
@@ -110,7 +110,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
 		}
 		if(!userModelOptional.get().isEnabled()) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: User is already disabled");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("User is already disabled");
 		}
 		UserModel userModel = new UserModel();
 		BeanUtils.copyProperties(userModelOptional.get(), userModel);
