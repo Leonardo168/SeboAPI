@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Leonardo168.api.dtos.ProductRecordDto;
 import com.Leonardo168.api.enums.RoleName;
+import com.Leonardo168.api.models.CategoryModel;
 import com.Leonardo168.api.models.ProductModel;
 import com.Leonardo168.api.models.RoleModel;
+import com.Leonardo168.api.services.CategoryService;
 import com.Leonardo168.api.services.ProductService;
 import com.Leonardo168.api.services.UserService;
 
@@ -33,36 +35,56 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-	
+
 	@Autowired
 	ProductService productService;
 	@Autowired
 	UserService userService;
-	
+	@Autowired
+	CategoryService categoryService;
+
 	@GetMapping
 	public ResponseEntity<Page<ProductModel>> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(productService.findAll(pageable));
 	}
-	
-	@GetMapping("/{isbn}")
-	public ResponseEntity <Object> getProduct(@PathVariable(value = "isbn") String isbn){
-		Optional<ProductModel> productModelOptional = productService.findByIsbn(isbn);
-		if(!productModelOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+
+	@GetMapping("/isbn/{isbn}")
+	public ResponseEntity <Object> getProduct(@PathVariable(value = "isbn") String isbn, @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
+		Optional<Page<Object>> productModelOptional = productService.findByIsbn(isbn, pageable);
+		if(productModelOptional.get().isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found for ISBN: " + isbn);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
 	}
-	
+
+	@GetMapping("/category/{category}")
+	public ResponseEntity <Object> getProductByCategory(@PathVariable(value = "category") String category, @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
+		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(category);
+		if(!categoryModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+		}
+		Optional<Page<ProductModel>> productModelOptional = productService.findByCategory(categoryModelOptional.get(), pageable);
+		if(productModelOptional.get().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found for category: " + category.toUpperCase());
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
+	}
+
 	@PostMapping
-	public ResponseEntity<ProductModel> saveProduct(@RequestBody @Valid ProductRecordDto productRecordDto) {
+	public ResponseEntity<Object> saveProduct(@RequestBody @Valid ProductRecordDto productRecordDto) {
+		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(productRecordDto.category());
+		if(!categoryModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+		}
 		ProductModel productModel = new ProductModel();
-		BeanUtils.copyProperties(productRecordDto, productModel);
+		BeanUtils.copyProperties(productRecordDto, productModel, productRecordDto.category());
+		productModel.setCategory(categoryModelOptional.get());
 		productModel.setAvailable(true);
 		productModel.setEditDate(LocalDateTime.now(ZoneId.of("UTC")));
 		productModel.setVendorId(userService.getCurrentUserId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productModel));
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseEntity <Object> updadateProduct(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProductRecordDto productRecordDto){
 		Optional<ProductModel> productModelOptional = productService.findById(id);

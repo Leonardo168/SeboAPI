@@ -10,6 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,8 +36,11 @@ public class ProductModel implements Serializable {
 	private String title;
 	@Column(nullable = false, length = 70)
 	private String author;
-	@Column(nullable = false, length = 20)
-	private String categorie;
+	@ManyToOne
+	@JoinTable(name = "TB_PRODUCTS_CATEGORIES",
+			joinColumns = @JoinColumn(name = "item_id"),
+			inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private CategoryModel category;
 	@Column(nullable = false)
 	private BigDecimal value;
 	@Column(nullable = false)
@@ -45,5 +51,6 @@ public class ProductModel implements Serializable {
 	private LocalDateTime editDate;
 	@Column(nullable = false)
 	private UUID vendorId;
+
 
 }
