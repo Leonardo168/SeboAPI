@@ -99,6 +99,9 @@ public class ProductController {
 				&& (!userService.getCurrentUserId().equals(productModelOptional.get().getVendorId()))) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot edit other users products");
 		}
+		if (!productModelOptional.get().isAvailable()) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot edit sold product");
+		}
 		ProductModel productModel = new ProductModel();
 		BeanUtils.copyProperties(productModelOptional.get(), productModel);
 		BeanUtils.copyProperties(productRecordDto, productModel);

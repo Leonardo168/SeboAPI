@@ -29,7 +29,7 @@ public class ProductModel implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID itemId;
+	private UUID productId;
 	@Column(nullable = false, length = 17)
 	private String isbn;
 	@Column(nullable = false, length = 70)
@@ -38,7 +38,7 @@ public class ProductModel implements Serializable {
 	private String author;
 	@ManyToOne
 	@JoinTable(name = "TB_PRODUCTS_CATEGORIES",
-			joinColumns = @JoinColumn(name = "item_id"),
+			joinColumns = @JoinColumn(name = "product_id"),
 			inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private CategoryModel category;
 	@Column(nullable = false)
