@@ -41,4 +41,8 @@ public class ProductService {
 		return productRepository.findByCategory(categoryModel, pageable);
 	}
 
+	public void delete(ProductModel productModel) {
+		productRepository.delete(productModel);
+	}
+
 }

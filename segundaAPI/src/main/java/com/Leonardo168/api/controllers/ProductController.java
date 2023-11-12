@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +77,9 @@ public class ProductController {
 		if(!categoryModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
 		}
+		if(!categoryModelOptional.get().isEnable()) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Category " + categoryModelOptional.get().getCategoryName() + " is disabled.");
+		}
 		ProductModel productModel = new ProductModel();
 		BeanUtils.copyProperties(productRecordDto, productModel, productRecordDto.category());
 		productModel.setCategory(categoryModelOptional.get());
@@ -100,6 +104,16 @@ public class ProductController {
 		BeanUtils.copyProperties(productRecordDto, productModel);
 		productModel.setEditDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(productService.save(productModel));
+	}
+	
+	@DeleteMapping("/definitivo/{id}")
+	public ResponseEntity<Object> deleteProductById(@PathVariable(value = "id") UUID id){
+		Optional<ProductModel> productModelOptional = productService.findById(id);
+		if(!productModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+		}
+		productService.delete(productModelOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body("Product deleted.");
 	}
 
 }

@@ -129,8 +129,6 @@ public class UserController {
 		if(!userModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
 		}
-		UserModel userModel = new UserModel();
-		BeanUtils.copyProperties(userModelOptional.get(), userModel);
 		userService.delete(userModelOptional.get());
 		return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
 	}
