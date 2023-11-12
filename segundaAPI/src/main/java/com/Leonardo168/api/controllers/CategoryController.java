@@ -21,17 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Leonardo168.api.dtos.CategoryRecordDto;
 import com.Leonardo168.api.models.CategoryModel;
+import com.Leonardo168.api.models.ProductModel;
 import com.Leonardo168.api.services.CategoryService;
+import com.Leonardo168.api.services.ProductService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
-	
+
 	@Autowired
 	CategoryService categoryService;
-	
+	@Autowired
+	ProductService productService;
+
 	@PostMapping
 	public ResponseEntity<Object> saveCategory(@RequestBody @Valid CategoryRecordDto categoryRecordDto){
 		if(categoryService.existsByname(categoryRecordDto.categoryName())) {
@@ -42,12 +46,12 @@ public class CategoryController {
 		categoryModel.setEnable(true);
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(categoryModel));
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<Page<CategoryModel>> getAllCategories(@PageableDefault(page = 0, size = 10, sort = "categoryName", direction = Sort.Direction.ASC)Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll(pageable));
 	}
-	
+
 	@PutMapping("/{categoryName}")
 	public ResponseEntity<Object> updateCategoryByName(@PathVariable(value = "categoryName") String categoryName, @RequestBody @Valid CategoryRecordDto categoryRecordDto){
 		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(categoryName);
@@ -61,7 +65,7 @@ public class CategoryController {
 		BeanUtils.copyProperties(categoryRecordDto, categoryModel);
 		return ResponseEntity.status(HttpStatus.OK).body(categoryService.save(categoryModel));
 	}
-	
+
 	@DeleteMapping("/{categoryName}")
 	public ResponseEntity<Object> disableCategoryByName(@PathVariable(value = "categoryName") String categoryName){
 		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(categoryName);
@@ -75,6 +79,20 @@ public class CategoryController {
 		categoryModel.setEnable(false);
 		categoryService.save(categoryModel);
 		return ResponseEntity.status(HttpStatus.OK).body("Category disabled");
+	}
+
+	@DeleteMapping("/definitivo/{categoryName}")
+	public ResponseEntity<Object> deleteCategoryByName(@PathVariable(value = "categoryName") String categoryName){
+		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(categoryName);
+		if(!categoryModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+		}
+		Optional<Page<ProductModel>> productModelOptional = productService.findByCategory(categoryModelOptional.get(), null);
+		if(!productModelOptional.get().isEmpty()){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete categories with registered products.");
+		}
+		categoryService.delete(categoryModelOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body("Category deleted.");
 	}
 
 }

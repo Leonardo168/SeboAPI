@@ -39,4 +39,8 @@ public class CategoryService {
 	public Optional<CategoryModel> findByCategoryName(String categoryName) {
 		return categoryRepository.findByCategoryName(categoryName.toUpperCase());
 	}
+
+	public void delete(CategoryModel categoryModel) {
+		categoryRepository.delete(categoryModel);
+	}
 }

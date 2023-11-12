@@ -110,7 +110,7 @@ public class ProductController {
 	public ResponseEntity<Object> deleteProductById(@PathVariable(value = "id") UUID id){
 		Optional<ProductModel> productModelOptional = productService.findById(id);
 		if(!productModelOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 		}
 		productService.delete(productModelOptional.get());
 		return ResponseEntity.status(HttpStatus.OK).body("Product deleted.");
