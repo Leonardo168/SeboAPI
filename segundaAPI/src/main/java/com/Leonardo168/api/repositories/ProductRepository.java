@@ -22,5 +22,7 @@ public interface ProductRepository extends JpaRepository<ProductModel, UUID>{
 	Optional<Page<Object>> findByIsbn(String isbn, Pageable pageable);
 
 	Optional<List<Object>> findByVendorId(UUID userId);
+	
+	boolean existsByVendorId(UUID vendorId);
 
 }

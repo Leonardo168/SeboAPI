@@ -27,6 +27,8 @@ import com.Leonardo168.api.dtos.UserRecordDto;
 import com.Leonardo168.api.enums.RoleName;
 import com.Leonardo168.api.models.RoleModel;
 import com.Leonardo168.api.models.UserModel;
+import com.Leonardo168.api.services.ProductService;
+import com.Leonardo168.api.services.TransactionService;
 import com.Leonardo168.api.services.UserService;
 
 import jakarta.validation.Valid;
@@ -37,6 +39,10 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
+	@Autowired
+	ProductService productService;
+	@Autowired
+	TransactionService transactionService;
 	
 	@PostMapping
 	public ResponseEntity <Object> saveUser(@RequestBody @Valid UserRecordDto userRecordDto){
@@ -124,6 +130,12 @@ public class UserController {
 	public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") UUID id){
 		if (id.equals(UUID.fromString("eae7e721-05ee-4c59-95a5-e4a845c2ad8e"))) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("cannot delete default admin");
+		}
+		if (transactionService.existsByBuyerIdOrVendorId(id, id)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot delete users with registered transactions.");
+		}
+		if (productService.existsByVendorId(id)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot delete users with registered products.");
 		}
 		Optional<UserModel> userModelOptional = userService.findByID(id);
 		if(!userModelOptional.isPresent()) {

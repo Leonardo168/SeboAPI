@@ -50,4 +50,8 @@ public class ProductService {
 		return productRepository.findByVendorId(userId);
 	}
 
+	public boolean existsByVendorId(UUID vendorId) {
+		return productRepository.existsByVendorId(vendorId);
+	}
+
 }

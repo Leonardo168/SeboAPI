@@ -32,4 +32,8 @@ public class TransactionService {
 		return transactionRepository.findByBuyerIdOrVendorId(buyerId, vendorId, pageable);
 	}
 
+	public boolean existsByBuyerIdOrVendorId(UUID buyerId, UUID vendorId) {
+		return transactionRepository.existsByBuyerIdOrVendorId(buyerId, vendorId);
+	}
+
 }

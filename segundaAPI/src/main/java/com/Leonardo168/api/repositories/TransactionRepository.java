@@ -15,4 +15,6 @@ public interface TransactionRepository extends JpaRepository<TransactionModel, U
 
 	Optional<Page<Object>> findByBuyerIdOrVendorId(UUID buyerId, UUID vendorId, Pageable pageable);
 
+	boolean existsByBuyerIdOrVendorId(UUID buyerId, UUID vendorId);
+
 }
