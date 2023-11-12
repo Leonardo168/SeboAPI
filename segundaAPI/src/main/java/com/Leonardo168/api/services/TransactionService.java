@@ -28,4 +28,8 @@ public class TransactionService {
 		return transactionRepository.findByBuyerId(userId, pageable);
 	}
 
+	public Optional<Page<Object>> findByBuyerIdOrVendorId(UUID buyerId, UUID vendorId, Pageable pageable) {
+		return transactionRepository.findByBuyerIdOrVendorId(buyerId, vendorId, pageable);
+	}
+
 }

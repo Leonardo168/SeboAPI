@@ -1,5 +1,6 @@
 package com.Leonardo168.api.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,6 +44,10 @@ public class ProductService {
 
 	public void delete(ProductModel productModel) {
 		productRepository.delete(productModel);
+	}
+
+	public Optional<List<Object>> findByVendorId(UUID userId) {
+		return productRepository.findByVendorId(userId);
 	}
 
 }

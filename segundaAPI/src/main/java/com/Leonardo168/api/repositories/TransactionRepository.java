@@ -13,4 +13,6 @@ public interface TransactionRepository extends JpaRepository<TransactionModel, U
 
 	Optional<Page<Object>> findByBuyerId(UUID userId, Pageable pageable);
 
+	Optional<Page<Object>> findByBuyerIdOrVendorId(UUID buyerId, UUID vendorId, Pageable pageable);
+
 }
