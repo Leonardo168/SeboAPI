@@ -13,4 +13,13 @@ public record ProductRecordDto(
 		@NotBlank @Size(max = 70) String category,
 		@NotNull BigDecimal value,
 		@NotBlank @Size(max = 255) String description) {
+	
+	public ProductRecordDto (String isbn,String title,String author,String category,BigDecimal value,String description) {
+		this.isbn = isbn;
+		this.title = title.toUpperCase();
+		this.author = author.toUpperCase();
+		this.category = category;
+		this.value = value;
+		this.description = description;
+	}
 }

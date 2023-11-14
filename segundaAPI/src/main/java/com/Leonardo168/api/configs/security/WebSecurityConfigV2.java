@@ -20,7 +20,6 @@ public class WebSecurityConfigV2 {
 	        .authorizeHttpRequests(authorizeRequests ->
 	            authorizeRequests
 	                .requestMatchers(HttpMethod.GET, "/user").hasAuthority("ROLE_ADMIN")
-//	                .requestMatchers(HttpMethod.GET, "/user/count").hasAuthority("ROLE_ADMIN")
 	                .requestMatchers(HttpMethod.POST, "/user").permitAll()
 	                .requestMatchers(HttpMethod.PUT, "/user").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
 	                .requestMatchers(HttpMethod.PUT, "/user/admin/{id}").hasAuthority("ROLE_ADMIN")
@@ -29,7 +28,9 @@ public class WebSecurityConfigV2 {
 	                .requestMatchers(HttpMethod.DELETE, "/user/definitivo/{id}").hasAuthority("ROLE_ADMIN")
 	                
 	                .requestMatchers(HttpMethod.GET, "/product").permitAll()
+	                .requestMatchers(HttpMethod.GET, "/product/title/{title}").permitAll()
 	                .requestMatchers(HttpMethod.GET, "/product/isbn/{isbn}").permitAll()
+	                .requestMatchers(HttpMethod.GET, "/product/author/{author}").permitAll()
 	                .requestMatchers(HttpMethod.GET, "/product/category/{category}").permitAll()
 	                .requestMatchers(HttpMethod.POST, "/product").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
 	                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
@@ -43,6 +44,7 @@ public class WebSecurityConfigV2 {
 	                
 	                .requestMatchers(HttpMethod.POST, "/transaction/{productId}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
 	                .requestMatchers(HttpMethod.GET, "/transaction/{buyerId}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+	                .requestMatchers(HttpMethod.DELETE, "/transaction/definitivo/{transactionId}").hasAuthority("ROLE_ADMIN")
 	                
 	                .anyRequest().authenticated()
 	        )

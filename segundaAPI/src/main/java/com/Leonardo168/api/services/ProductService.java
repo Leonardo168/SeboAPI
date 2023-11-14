@@ -1,6 +1,5 @@
 package com.Leonardo168.api.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,12 +45,16 @@ public class ProductService {
 		productRepository.delete(productModel);
 	}
 
-	public Optional<List<Object>> findByVendorId(UUID userId) {
-		return productRepository.findByVendorId(userId);
-	}
-
 	public boolean existsByVendorId(UUID vendorId) {
 		return productRepository.existsByVendorId(vendorId);
+	}
+
+	public Optional<Page<Object>> findByTitle(String title, Pageable pageable) {
+		return productRepository.findByTitle(title.toUpperCase(), pageable);
+	}
+
+	public Optional<Page<Object>> findByAuthor(String author, Pageable pageable) {
+		return productRepository.findByAuthor(author.toUpperCase(), pageable);
 	}
 
 }

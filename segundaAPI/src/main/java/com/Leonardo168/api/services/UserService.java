@@ -31,10 +31,6 @@ public class UserService {
 		return userRepository.findAll(pageable);
 	}
 	
-//	public String countUsers() {
-//		return ("Users registered: " + findAll().size());
-//	}
-	
 	public Optional<UserModel> findByID(UUID id) {
 		return userRepository.findById(id);
 	}

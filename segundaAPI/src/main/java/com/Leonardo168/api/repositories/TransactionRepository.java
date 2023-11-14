@@ -17,4 +17,6 @@ public interface TransactionRepository extends JpaRepository<TransactionModel, U
 
 	boolean existsByBuyerIdOrVendorId(UUID buyerId, UUID vendorId);
 
+	boolean existsByProductId(UUID id);
+
 }

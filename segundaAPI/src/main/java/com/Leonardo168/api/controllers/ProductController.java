@@ -29,6 +29,7 @@ import com.Leonardo168.api.models.ProductModel;
 import com.Leonardo168.api.models.RoleModel;
 import com.Leonardo168.api.services.CategoryService;
 import com.Leonardo168.api.services.ProductService;
+import com.Leonardo168.api.services.TransactionService;
 import com.Leonardo168.api.services.UserService;
 
 import jakarta.validation.Valid;
@@ -43,17 +44,37 @@ public class ProductController {
 	UserService userService;
 	@Autowired
 	CategoryService categoryService;
+	@Autowired
+	TransactionService transactionService;
 
 	@GetMapping
 	public ResponseEntity<Page<ProductModel>> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(productService.findAll(pageable));
 	}
+	
+	@GetMapping("/title/{title}")
+	public ResponseEntity <Object> getProductByTitle(@PathVariable(value = "title") String title, @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
+		Optional<Page<Object>> productModelOptional = productService.findByTitle(title, pageable);
+		if(productModelOptional.get().isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found for title: " + title);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
+	}
 
 	@GetMapping("/isbn/{isbn}")
-	public ResponseEntity <Object> getProduct(@PathVariable(value = "isbn") String isbn, @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
+	public ResponseEntity <Object> getProductByIsbn(@PathVariable(value = "isbn") String isbn, @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
 		Optional<Page<Object>> productModelOptional = productService.findByIsbn(isbn, pageable);
 		if(productModelOptional.get().isEmpty()) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found for ISBN: " + isbn);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
+	}
+	
+	@GetMapping("/author/{author}")
+	public ResponseEntity <Object> getProductByAuthor(@PathVariable(value = "author") String author, @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC)Pageable pageable){
+		Optional<Page<Object>> productModelOptional = productService.findByAuthor(author, pageable);
+		if(productModelOptional.get().isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found for author: " + author);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(productModelOptional.get());
 	}
@@ -102,6 +123,13 @@ public class ProductController {
 		if (!productModelOptional.get().isAvailable()) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot edit sold product");
 		}
+		Optional<CategoryModel> categoryModelOptional = categoryService.findByCategoryName(productRecordDto.category());
+		if(!categoryModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+		}
+		if(!categoryModelOptional.get().isEnable()) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Category " + categoryModelOptional.get().getCategoryName() + " is disabled.");
+		}
 		ProductModel productModel = new ProductModel();
 		BeanUtils.copyProperties(productModelOptional.get(), productModel);
 		BeanUtils.copyProperties(productRecordDto, productModel);
@@ -114,6 +142,9 @@ public class ProductController {
 		Optional<ProductModel> productModelOptional = productService.findById(id);
 		if(!productModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+		}
+		if (transactionService.existsByProductId(id)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot delete products with registered transactions.");
 		}
 		productService.delete(productModelOptional.get());
 		return ResponseEntity.status(HttpStatus.OK).body("Product deleted.");

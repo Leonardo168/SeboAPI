@@ -64,11 +64,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.findAll(pageable));
 	}
 	
-//	@GetMapping("/count")
-//	public ResponseEntity<Object> countUsers(){
-//		return ResponseEntity.status(HttpStatus.OK).body(userService.countUsers());
-//	}
-	
 	@PutMapping
 	public ResponseEntity <Object> updadateUser(@RequestBody @Valid UserRecordDto userRecordDto){
 		if((userService.existsByUsername(userRecordDto.username())) && (!userService.getCurrentUsername().equals(userRecordDto.username()))) {
@@ -125,7 +120,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body("User disabled");
 	}
 	
-	/*PARA REMOVER USUÁRIOS DO BANCO DE DADOS*/
 	@DeleteMapping("definitivo/{id}")
 	public ResponseEntity<Object> deleteUserById(@PathVariable(value = "id") UUID id){
 		if (id.equals(UUID.fromString("eae7e721-05ee-4c59-95a5-e4a845c2ad8e"))) {

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.Leonardo168.api.models.TransactionModel;
-import com.Leonardo168.api.repositories.ProductRepository;
 import com.Leonardo168.api.repositories.TransactionRepository;
 
 @Service
@@ -17,8 +16,6 @@ public class TransactionService {
 	
 	@Autowired
 	TransactionRepository transactionRepository;
-	@Autowired
-	ProductRepository productRepository;
 
 	public Object save(TransactionModel transactionModel) {
 		return transactionRepository.save(transactionModel);
@@ -34,6 +31,18 @@ public class TransactionService {
 
 	public boolean existsByBuyerIdOrVendorId(UUID buyerId, UUID vendorId) {
 		return transactionRepository.existsByBuyerIdOrVendorId(buyerId, vendorId);
+	}
+
+	public boolean existsByProductId(UUID id) {
+		return transactionRepository.existsByProductId(id);
+	}
+
+	public Optional<TransactionModel> findById(UUID id) {
+		return transactionRepository.findById(id);
+	}
+
+	public void delete(TransactionModel transactionModel) {
+		transactionRepository.delete(transactionModel);
 	}
 
 }

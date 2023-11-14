@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,14 +62,23 @@ public class TransactionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(transactionModel);
 	}
 
-
 	@GetMapping("/{userId}")
-	public ResponseEntity <Object> getProduct(@PathVariable(value = "userId") UUID userId, @PageableDefault(page = 0, size = 10, sort = "transactionDate", direction = Sort.Direction.ASC)Pageable pageable){
+	public ResponseEntity <Object> getTransaction(@PathVariable(value = "userId") UUID userId, @PageableDefault(page = 0, size = 10, sort = "transactionDate", direction = Sort.Direction.ASC)Pageable pageable){
 		Optional<Page<Object>> transactionModelOptional = transactionService.findByBuyerIdOrVendorId(userId, userId, pageable);
 		if(transactionModelOptional.get().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Transaction found for user: " + userId);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(transactionModelOptional.get());
+	}
+	
+	@DeleteMapping("/definitivo/{id}")
+	public ResponseEntity<Object> deleteTransactionById(@PathVariable(value = "id") UUID id){
+		Optional<TransactionModel> transactionModelOptional = transactionService.findById(id);
+		if (!transactionModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transaction not found.");
+		}
+		transactionService.delete(transactionModelOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body("Transaction deleted.");
 	}
 
 }

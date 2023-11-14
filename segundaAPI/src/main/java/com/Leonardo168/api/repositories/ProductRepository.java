@@ -1,6 +1,5 @@
 package com.Leonardo168.api.repositories;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,8 +20,11 @@ public interface ProductRepository extends JpaRepository<ProductModel, UUID>{
 
 	Optional<Page<Object>> findByIsbn(String isbn, Pageable pageable);
 
-	Optional<List<Object>> findByVendorId(UUID userId);
 	
 	boolean existsByVendorId(UUID vendorId);
+
+	Optional<Page<Object>> findByAuthor(String author, Pageable pageable);
+
+	Optional<Page<Object>> findByTitle(String title, Pageable pageable);
 
 }
