@@ -132,7 +132,8 @@ public class ProductController {
 		}
 		ProductModel productModel = new ProductModel();
 		BeanUtils.copyProperties(productModelOptional.get(), productModel);
-		BeanUtils.copyProperties(productRecordDto, productModel);
+		BeanUtils.copyProperties(productRecordDto, productModel, productRecordDto.category());
+		productModel.setCategory(categoryModelOptional.get());
 		productModel.setEditDate(LocalDateTime.now(ZoneId.of("UTC")));
 		return ResponseEntity.status(HttpStatus.OK).body(productService.save(productModel));
 	}
