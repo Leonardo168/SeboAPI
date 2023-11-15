@@ -33,8 +33,8 @@ public class WebSecurityConfigV2 {
 	                .requestMatchers(HttpMethod.GET, "/product/author/{author}").permitAll()
 	                .requestMatchers(HttpMethod.GET, "/product/category/{category}").permitAll()
 	                .requestMatchers(HttpMethod.POST, "/product").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-	                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-	                .requestMatchers(HttpMethod.DELETE, "/product/definitivo/{id}").hasAuthority("ROLE_ADMIN")
+	                .requestMatchers(HttpMethod.PUT, "/product/{productId}").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+	                .requestMatchers(HttpMethod.DELETE, "/product/definitivo/{productId}").hasAuthority("ROLE_ADMIN")
 	                
 	                .requestMatchers(HttpMethod.GET, "/category").permitAll()
 	                .requestMatchers(HttpMethod.POST, "/category").hasAuthority("ROLE_ADMIN")

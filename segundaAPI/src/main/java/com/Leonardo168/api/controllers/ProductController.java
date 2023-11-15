@@ -110,9 +110,9 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productModel));
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity <Object> updadateProduct(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProductRecordDto productRecordDto){
-		Optional<ProductModel> productModelOptional = productService.findById(id);
+	@PutMapping("/{productId}")
+	public ResponseEntity <Object> updadateProduct(@PathVariable(value = "productId") UUID productId, @RequestBody @Valid ProductRecordDto productRecordDto){
+		Optional<ProductModel> productModelOptional = productService.findById(productId);
 		if(!productModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 		}
@@ -138,13 +138,13 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.OK).body(productService.save(productModel));
 	}
 	
-	@DeleteMapping("/definitivo/{id}")
-	public ResponseEntity<Object> deleteProductById(@PathVariable(value = "id") UUID id){
-		Optional<ProductModel> productModelOptional = productService.findById(id);
+	@DeleteMapping("/definitivo/{productId}")
+	public ResponseEntity<Object> deleteProductById(@PathVariable(value = "productId") UUID productId){
+		Optional<ProductModel> productModelOptional = productService.findById(productId);
 		if(!productModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 		}
-		if (transactionService.existsByProductId(id)) {
+		if (transactionService.existsByProductId(productId)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot delete products with registered transactions.");
 		}
 		productService.delete(productModelOptional.get());

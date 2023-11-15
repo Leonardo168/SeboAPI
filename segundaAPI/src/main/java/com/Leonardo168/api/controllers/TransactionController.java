@@ -48,7 +48,7 @@ public class TransactionController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("You cannot buy your own products.");
 		}
 		if(!productModelOptional.get().isAvailable()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not available.");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Product not available.");
 		}
 		TransactionModel transactionModel = new TransactionModel();
 		transactionModel.setBuyerId(userModel.getUserId());
