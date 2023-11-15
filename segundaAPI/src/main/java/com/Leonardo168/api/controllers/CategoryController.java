@@ -58,6 +58,9 @@ public class CategoryController {
 		if(!categoryModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
 		}
+		if(productService.existsByCategory(categoryModelOptional.get())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot edit categories with registered products.");
+		}
 		if(categoryService.existsByname(categoryRecordDto.categoryName()) && !categoryRecordDto.categoryName().equals(categoryModelOptional.get().getCategoryName())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Category name is already in use!");
 		}

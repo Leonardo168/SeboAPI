@@ -57,4 +57,8 @@ public class ProductService {
 		return productRepository.findByAuthor(author.toUpperCase(), pageable);
 	}
 
+	public boolean existsByCategory(CategoryModel category) {
+		return productRepository.existsByCategory(category);
+	}
+
 }
