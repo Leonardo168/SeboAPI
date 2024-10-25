@@ -1,4 +1,3 @@
-select * from tb_parking_spot;
 select * from tb_user;
 select * from tb_role;
 select * from tb_users_roles;
